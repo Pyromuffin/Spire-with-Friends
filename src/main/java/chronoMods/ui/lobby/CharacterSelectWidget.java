@@ -251,7 +251,12 @@ public class CharacterSelectWidget implements ScrollBarListener
               break;
             CustomModeCharacterButton o = ((CustomModeCharacterButton)this.options.get(i));
 
-            o.locked = randomize;
+            if(randomize){
+                o.locked = true;
+                o.selected = false;
+            } else {
+                o.locked = false;
+            }
 
             if (ReflectionHacks.getPrivate(o, CustomModeCharacterButton.class, "buttonImg") == null) {
               ReflectionHacks.setPrivate(o, CustomModeCharacterButton.class, "buttonImg", o.c.getCustomModeCharacterButtonImage());

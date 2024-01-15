@@ -130,7 +130,9 @@ public class NewGameScreen implements DropdownMenuListener
 
 
 	public NewGameScreen() {
-		characterSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.65f);     // 780y 
+
+		randomizeToggle = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.72f, "Randomize Character", false);  //475y
+		characterSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.65f);     // 780y
 		ascensionSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.5625f);   // 675y
 		seedSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.458f);         // 550y
 		playerList.move(Settings.WIDTH / 2.0F, Settings.HEIGHT * 0.6875f);      // -375y
@@ -142,7 +144,6 @@ public class NewGameScreen implements DropdownMenuListener
 		hardToggle      = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.270f, LOBBY[33], false);				             //400y
 		lamentToggle    = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.270f, LOBBY[21], Settings.isTrial);             //400y
 		ironmanToggle   = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.208f, LOBBY[9], NewDeathScreenPatches.Ironman);   //325y
-		randomizeToggle = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.208f, "Randomize Character", false);  //475y
 
 
 		downfallToggle  = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.146f, "Downfall", false);
