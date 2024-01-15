@@ -89,6 +89,8 @@ public class RemotePlayer
 	// Map Paint!
 	public MapCanvas[] drawable = new MapCanvas[4]; 
 
+	public Boolean randomized = false;
+
 	public static Color[] colourChoices = new Color[] {
 	  Color.RED.cpy(),
 	  Color.BLUE.cpy(),

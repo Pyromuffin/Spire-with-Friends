@@ -5,9 +5,9 @@
         <profile>
             <id>inject-sts-paths</id>
             <properties>
-                <install-root>/path/to/Slay the Spire</install-root> <!-- should contain desktop-1.0.jar -->
-                <mts-jar-path>path/to/ModTheSpire.jar</mts-jar-path>
-                <basemod-jar-path>path/to/BaseMod.jar</basemod-jar-path>
+                <install-root>C:\Program Files (x86)\Steam\steamapps\common\SlayTheSpire</install-root> <!-- should contain desktop-1.0.jar -->
+                <mts-jar-path>C:\Program Files (x86)\Steam\steamapps\workshop\content\646570\1605060445\ModTheSpire.jar</mts-jar-path>
+                <basemod-jar-path>C:\Program Files (x86)\Steam\steamapps\workshop\content\646570\1605833019\BaseMod.jar</basemod-jar-path>
                 <downfall-jar-path>path/to/downfall.jar</downfall-jar-path>
                 <ascension-plus-jar-path>path/to/AscensionPlus.jar</ascension-plus-jar-path>
                 <swf-output-path>path/to/swf/output</swf-output-path>

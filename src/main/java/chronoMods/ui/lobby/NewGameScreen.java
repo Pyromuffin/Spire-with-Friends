@@ -67,6 +67,8 @@ public class NewGameScreen implements DropdownMenuListener
 	// Characters
 	public CharacterSelectWidget characterSelectWidget = new CharacterSelectWidget();
 
+	public ToggleWidget randomizeToggle;
+
 	// Ascension Selection
 	public AscensionSelectWidget ascensionSelectWidget = new AscensionSelectWidget();
 
@@ -133,12 +135,18 @@ public class NewGameScreen implements DropdownMenuListener
 		seedSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.458f);         // 550y
 		playerList.move(Settings.WIDTH / 2.0F, Settings.HEIGHT * 0.6875f);      // -375y
 
+
+
 		heartToggle     = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.395f, LOBBY[5], Settings.isFinalActAvailable);  //475y
 		neowToggle      = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.333f, LOBBY[7], Settings.isTrial);             //400y
 		hardToggle      = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.270f, LOBBY[33], false);				             //400y
 		lamentToggle    = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.270f, LOBBY[21], Settings.isTrial);             //400y
 		ironmanToggle   = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.208f, LOBBY[9], NewDeathScreenPatches.Ironman);   //325y
+		randomizeToggle = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.208f, "Randomize Character", false);  //475y
+
+
 		downfallToggle  = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.146f, "Downfall", false);
+
 
 		privateToggle   = new ToggleWidget(Settings.WIDTH - 256.0F * Settings.scale, 48.0F * Settings.scale, LOBBY[19], false);
 
@@ -238,6 +246,13 @@ public class NewGameScreen implements DropdownMenuListener
 
 		playerList.update();
 
+		if(randomizeToggle.update()){
+			characterSelectWidget.SetRandomizedClass();
+			characterSelectWidget.randomize = randomizeToggle.isTicked();
+			NetworkHelper.sendData(NetworkHelper.dataType.Character);
+		}
+
+
 		// Update the selectable options (but only if you're the owner)
 		if (TogetherManager.currentLobby != null && TogetherManager.currentLobby.isOwner()) {
 
@@ -263,6 +278,8 @@ public class NewGameScreen implements DropdownMenuListener
 				neowToggle.setTicked(false);
 				lamentToggle.setTicked(false);
 			}
+
+
 
 			if (TogetherManager.gameMode != TogetherManager.mode.Bingo) {
 				if (heartToggle.update())   { NetworkHelper.sendData(NetworkHelper.dataType.Rules); }
@@ -298,6 +315,13 @@ public class NewGameScreen implements DropdownMenuListener
 				TipHelper.renderGenericTip(this.privateToggle.hb.cX * 0.85f, this.privateToggle.hb.cY + TOOLTIP_Y_OFFSET + 48f, LOBBY[19], LOBBY[20]); }
 			if (this.hardToggle.hb.hovered) {
 				TipHelper.renderGenericTip(this.hardToggle.hb.cX * TOOLTIP_X_OFFSET, this.hardToggle.hb.cY + TOOLTIP_Y_OFFSET + 48f, LOBBY[33], LOBBY[34]); }
+
+			if(this.randomizeToggle.hb.hovered){
+				TipHelper.renderGenericTip(this.randomizeToggle.hb.cX * TOOLTIP_X_OFFSET, this.randomizeToggle.hb.cY + TOOLTIP_Y_OFFSET + 48f,
+						"Randomize", "Enter the Spire with a random character.");
+			}
+
+
 
 			if (TogetherManager.gameMode == TogetherManager.mode.Versus) {
 				if (lamentToggle.update()) { NetworkHelper.sendData(NetworkHelper.dataType.Rules); }
@@ -457,6 +481,7 @@ public class NewGameScreen implements DropdownMenuListener
 		// false, false, false is heart and neow, and occurs when the second toggle only is set
 
 		CardCrawlGame.chosenCharacter = characterSelectWidget.getChosenClass();
+
 		CardCrawlGame.mainMenuScreen.isFadingOut = true;
 		CardCrawlGame.mainMenuScreen.fadeOutMusic();
 
@@ -624,6 +649,8 @@ public class NewGameScreen implements DropdownMenuListener
 			ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE); 
 
 		characterSelectWidget.render(sb);
+		randomizeToggle.render(sb);
+
 
 		if (TogetherManager.currentLobby != null && !TogetherManager.currentLobby.isOwner())
 			ShaderHelper.setShader(sb, ShaderHelper.Shader.GRAYSCALE); 

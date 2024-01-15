@@ -263,7 +263,7 @@ public class PlayerListWidgetItem
                     0f,
                     color,
                     hoverScale);
-                if (player.character != null)
+                if (player.character != null && !player.randomized)
                     FontHelper.renderSmartText(
                         sb,
                         FontHelper.cardTypeFont,
@@ -287,6 +287,19 @@ public class PlayerListWidgetItem
                     Settings.scale, Settings.scale,
                     0f, 0, 0, 64, 64,
                     false, false);
+            }
+
+            // random ?
+            if(player.randomized) {
+                sb.draw(
+                        ImageMaster.INTENT_UNKNOWN,
+                        this.x - 64 / 2f + 64f * Settings.scale,
+                        this.y + this.scroll - (i * 75f * Settings.scale) - 64 / 2f - 2f * Settings.scale,
+                        64 / 2f, 64 / 2f,
+                        64, 64,
+                        Settings.scale, Settings.scale,
+                        0f, 0, 0, 64, 64,
+                        false, false);
             }
  
             // Team Box

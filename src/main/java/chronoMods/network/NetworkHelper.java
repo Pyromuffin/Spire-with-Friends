@@ -318,6 +318,7 @@ public class NetworkHelper {
 				// Extract the string
 				try {
 					playerInfo.character = NewMenuButtons.newGameScreen.characterSelectWidget.options.get(data.getInt(4)).c;
+					playerInfo.randomized = data.getInt(8) == 1;
 				} catch (Exception e) {}
 				break;
 			case SetDisplayRelics:
@@ -1207,8 +1208,9 @@ public class NetworkHelper {
 				data.putInt(4, AbstractDungeon.player.gold);
 				break;
 			case Character:
-				data = ByteBuffer.allocateDirect(8);
+				data = ByteBuffer.allocateDirect(12);
 				data.putInt(4, NewMenuButtons.newGameScreen.characterSelectWidget.getChosenOption());
+				data.putInt(8, NewMenuButtons.newGameScreen.characterSelectWidget.randomize ? 1 : 0);
 				// String characterName = NewMenuButtons.newGameScreen.characterSelectWidget.getChosenOptionLocalizedName();
 				// data = ByteBuffer.allocateDirect(4 + characterName.getBytes().length);
 

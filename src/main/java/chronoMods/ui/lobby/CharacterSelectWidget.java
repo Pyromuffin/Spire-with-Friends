@@ -7,6 +7,7 @@ import chronoMods.ui.deathScreen.EndScreenBingoLoss;
 import chronoMods.ui.deathScreen.NewDeathScreenPatches;
 import chronoMods.ui.mainMenu.NewMenuButtons;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -34,6 +35,9 @@ public class CharacterSelectWidget implements ScrollBarListener
     public ArrayList<CustomModeCharacterButton> options = new ArrayList();
     private ScrollBar scrollbar;
     private int rowShown = 0;
+
+    public boolean randomize = false;
+    private int randomizedIndex = 0;
 
     public class CustomComparator implements Comparator<CustomModeCharacterButton> {
         @Override
@@ -118,7 +122,17 @@ public class CharacterSelectWidget implements ScrollBarListener
         }
     }
 
+
+    public void SetRandomizedClass() {
+        randomizedIndex = MathUtils.random(this.options.size() -1);
+    }
+
     public AbstractPlayer.PlayerClass getChosenClass() {
+
+        if(randomize){
+            return this.options.get(randomizedIndex).c.chosenClass;
+        }
+
         for (CustomModeCharacterButton b : this.options) {
           if (b.selected)
           {
@@ -133,6 +147,11 @@ public class CharacterSelectWidget implements ScrollBarListener
     }
 
     public int getChosenOption() {
+
+        if(randomize){
+            return randomizedIndex;
+        }
+
         for (CustomModeCharacterButton b : this.options) {
           if (b.selected)
           {
@@ -145,6 +164,11 @@ public class CharacterSelectWidget implements ScrollBarListener
     }
 
     public String getChosenOptionName() {
+
+        if(randomize){
+            return "Random";
+        }
+
         int i = 0;
         for (CustomModeCharacterButton b : this.options) {
           i++;
@@ -161,6 +185,11 @@ public class CharacterSelectWidget implements ScrollBarListener
     }
 
     public String getChosenOptionLocalizedName() {
+
+        if(randomize){
+            return "Random";
+        }
+
         for (CustomModeCharacterButton b : this.options) {
           if (b.selected)
           {
@@ -221,12 +250,16 @@ public class CharacterSelectWidget implements ScrollBarListener
             if (i >= rowShown * 4 + 16)
               break;
             CustomModeCharacterButton o = ((CustomModeCharacterButton)this.options.get(i));
+
+            o.locked = randomize;
+
             if (ReflectionHacks.getPrivate(o, CustomModeCharacterButton.class, "buttonImg") == null) {
               ReflectionHacks.setPrivate(o, CustomModeCharacterButton.class, "buttonImg", o.c.getCustomModeCharacterButtonImage());
             }
             try {
               if (o.y >= y)
                 o.render(sb);
+
             } catch (Exception e) {}
         }
         if (options.size() > 16)
