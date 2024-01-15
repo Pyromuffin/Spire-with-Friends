@@ -131,7 +131,7 @@ public class NewGameScreen implements DropdownMenuListener
 
 	public NewGameScreen() {
 
-		randomizeToggle = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.72f, "Randomize Character", false);  //475y
+		randomizeToggle = new ToggleWidget(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.72f, LOBBY[37], false);  //475y
 		characterSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.65f);     // 780y
 		ascensionSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.5625f);   // 675y
 		seedSelectWidget.move(TOGGLE_X_RIGHT, Settings.HEIGHT * 0.458f);         // 550y
@@ -319,7 +319,7 @@ public class NewGameScreen implements DropdownMenuListener
 
 			if(this.randomizeToggle.hb.hovered){
 				TipHelper.renderGenericTip(this.randomizeToggle.hb.cX * TOOLTIP_X_OFFSET, this.randomizeToggle.hb.cY + TOOLTIP_Y_OFFSET + 48f,
-						"Randomize", "Enter the Spire with a random character.");
+						LOBBY[37], LOBBY[38]);
 			}
 
 
