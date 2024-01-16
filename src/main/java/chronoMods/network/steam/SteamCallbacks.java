@@ -70,13 +70,18 @@ public class SteamCallbacks
       
       SteamPlayer p = SteamIntegration.getPlayer(targetPlayer);
 
-      if (event == SteamMatchmaking.ChatMemberStateChange.Left) 
-        NetworkHelper.removePlayer(p);
+
+      if (event == SteamMatchmaking.ChatMemberStateChange.Left)
+        TogetherManager.infoPopup.show("Disconnect", "Someone left, you can wait if you want!");
+        //NetworkHelper.removePlayer(p);
       
 
-      if (event == SteamMatchmaking.ChatMemberStateChange.Disconnected) 
-        NetworkHelper.removePlayer(p);
-      
+      if (event == SteamMatchmaking.ChatMemberStateChange.Disconnected)
+        TogetherManager.infoPopup.show("Disconnect", "Someone left, you can wait if you want!");
+        //NetworkHelper.removePlayer(p);
+
+
+
 
       if (event == SteamMatchmaking.ChatMemberStateChange.Kicked) 
         NetworkHelper.removePlayer(p);

@@ -273,9 +273,13 @@ public class CoopBossRelicSelectScreen implements StartActSubscriber {
 	
 	public void blightChoiceComplete() {
 		TogetherManager.log("Blight has been obtained");
+		boolean isBossRoom = AbstractDungeon.getCurrRoom() instanceof TreasureRoomBoss;
 
-		TreasureRoomBoss curRoom = (TreasureRoomBoss)AbstractDungeon.getCurrRoom();
-		curRoom.choseRelic = true;
+		if(isBossRoom){
+			TreasureRoomBoss curRoom = (TreasureRoomBoss)AbstractDungeon.getCurrRoom();
+			curRoom.choseRelic = true;
+		}
+
 
 		this.isDone = true;
 
@@ -286,19 +290,26 @@ public class CoopBossRelicSelectScreen implements StartActSubscriber {
 
 	        AbstractDungeon.isScreenUp = false;
 	        AbstractDungeon.overlayMenu.hideBlackScreen();
-			AbstractDungeon.overlayMenu.proceedButton.show();
+			if(isBossRoom)
+				AbstractDungeon.overlayMenu.proceedButton.show();
 		}
 
 		for (ArrayList<RemotePlayer> a : this.selected) {
 			a.clear();
 		}
+
+		TeamworkCustom.isActive = false;
 	}
 				
 	public void render(SpriteBatch sb) {
 		for (AbstractGameEffect e : AbstractDungeon.effectList)
-			e.render(sb); 
+			e.render(sb);
 
-		((TreasureRoomBoss)AbstractDungeon.getCurrRoom()).chest.render(sb);
+		boolean isBossRoom = AbstractDungeon.getCurrRoom() instanceof TreasureRoomBoss;
+		if(isBossRoom){
+			((TreasureRoomBoss)AbstractDungeon.getCurrRoom()).chest.render(sb);
+		}
+
 		AbstractDungeon.player.render(sb);
 
 		sb.setColor(Color.WHITE);

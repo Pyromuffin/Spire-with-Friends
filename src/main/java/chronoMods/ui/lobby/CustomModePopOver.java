@@ -1,12 +1,15 @@
 package chronoMods.ui.lobby;
 
+import basemod.ReflectionHacks;
 import chronoMods.coop.MergeCustom;
+import chronoMods.coop.TeamworkCustom;
 import chronoMods.network.NetworkHelper;
 import chronoMods.ui.mainMenu.NewMenuButtons;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -18,6 +21,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.RunModStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.neow.NeowEvent;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterSelectScreen;
 import com.megacrit.cardcrawl.screens.custom.CustomMod;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
@@ -61,7 +65,9 @@ public class CustomModePopOver implements ScrollBarListener {
   private static final String MOD_PRAISE_SNECKO = "Praise Snecko";
   
   private static final String MOD_INCEPTION = "Inception";
-  
+
+  private static final String MOD_TEAMWORK = "Teamwork";
+
   private static final String MOD_MY_TRUE_FORM = "My True Form";
   
   private static final String MOD_STARTER_DECK = "Starter Deck";
@@ -108,6 +114,7 @@ public class CustomModePopOver implements ScrollBarListener {
     this.modList = new ArrayList<>();
 
     // Spire w/ Friends mods
+    CustomMod teamworkMod = addMod("Teamwork", "b", false);
     CustomMod draftMod = addDailyMod("Draft", "b");
     CustomMod sealedMod = addDailyMod("SealedDeck", "b");
     addDailyMod("Hoarder", "b");
@@ -147,7 +154,15 @@ public class CustomModePopOver implements ScrollBarListener {
     diverseMod.setMutualExclusionPair(redMod);
     diverseMod.setMutualExclusionPair(greenMod);
     diverseMod.setMutualExclusionPair(blueMod);
-    diverseMod.setMutualExclusionPair(purpleMod); 
+    diverseMod.setMutualExclusionPair(purpleMod);
+
+    if(teamworkMod != null){
+      // no idea where to add this.
+      teamworkMod.name = "Teamwork";
+      teamworkMod.description = "Choose a team relic at the start of the run.";
+      String coloredString = FontHelper.colorString("[" + teamworkMod.name + "]", teamworkMod.color) + " " + teamworkMod.description;
+      ReflectionHacks.setPrivate(teamworkMod, teamworkMod.getClass(), "label", coloredString) ;
+    }
   }
   
   private CustomMod addMod(String id, String color, boolean isDailyMod) {
@@ -265,6 +280,9 @@ public class CustomModePopOver implements ScrollBarListener {
         // case "Daily Mods":
         //   trial.setRandomDailyMods();
         //   break;
+        case "Teamwork":
+          TeamworkCustom.isActive = true;
+          break;
         case "One Hit Wonder":
           trial.setMaxHpOverride(1);
           break;
