@@ -21,19 +21,18 @@ import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.ShaderHelper;
 import com.megacrit.cardcrawl.localization.BlightStrings;
+import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.potions.SmokeBomb;
+import com.megacrit.cardcrawl.ui.campfire.RestOption;
 
 public class HandOfFate extends AbstractBlight {
-    // When one player dies, they are 'sustained' by their ally's health.
-    //  If either player takes damage during this time, both their health drops.
-    //  Extra 'overkill' damage will also be applied to both players
-    //  If both players have 0 hp, they die
 
     public static final String ID = "HandOfFate";
     private static final BlightStrings blightStrings = CardCrawlGame.languagePack.getBlightString(ID);
     public static final String NAME = blightStrings.NAME;
     public static final String[] DESCRIPTIONS = blightStrings.DESCRIPTION;
+    public boolean stuck = false;
 
     public HandOfFate() {
         super(ID, NAME, "", "spear.png", true);
@@ -88,10 +87,13 @@ public class HandOfFate extends AbstractBlight {
         AbstractDungeon.player.isDead = false;
         AbstractDungeon.player.heal(AbstractDungeon.player.maxHealth, true);
         NetworkHelper.sendData(NetworkHelper.dataType.Hp);
+        stuck = true;
 
         // use a smoke bomb
         AbstractPotion p = PotionHelper.getPotion("SmokeBomb");
         p.use(AbstractDungeon.player);
+
+        NetworkHelper.sendData(NetworkHelper.dataType.Stuck);
 
         //AbstractDungeon.player.obtainPotion(p);
         //p.use(AbstractDungeon.player);
@@ -142,4 +144,28 @@ public class HandOfFate extends AbstractBlight {
             return SpireReturn.Continue();
         }
     }
+
+    @SpirePatch(clz = MapRoomNode.class, method="isConnectedTo")
+    public static class Stuck {
+        public static boolean Postfix(boolean __result, MapRoomNode __instance, MapRoomNode node) {
+            HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
+            if(hand != null && hand.stuck){
+                return false;
+            }
+
+            return __result;
+        }
+    }
+
+
+    @SpirePatch(clz = RestOption.class, method="useOption")
+    public static class ReviveRest {
+        public static void Postfix(RestOption __instance) {
+            if(AbstractDungeon.player.hasBlight("HandOfFate")){
+                NetworkHelper.sendData(NetworkHelper.dataType.Revive);
+            }
+        }
+    }
+
+
 }

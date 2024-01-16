@@ -37,6 +37,7 @@ import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.cutscenes.CutscenePanel;
@@ -1106,12 +1107,36 @@ public class NetworkHelper {
 							h.checkUsable();
 
 				break;
+
+			case Stuck:
+				playerInfo.stuck = data.getInt(4) > 0;
+				break;
+
+			case Revive:
+
+				HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
+				if(hand != null && hand.stuck){
+					hand.stuck = false;
+					// take us to the floor they got revived on.
+					int x = data.getInt(4);
+					int y = data.getInt(8);
+					MapRoomNode node = AbstractDungeon.map.get(y).get(x);
+					AbstractDungeon.setCurrMapNode(node);
+
+					TogetherManager.log(playerInfo.userName + " is reviving at " + x + " " + y);
+					sendData(dataType.Floor);
+				}
+
+				break;
 		}
 	}
 
     public static enum dataType
     {
-      	Rules, Start, Ready, Version, Floor, Act, Hp, Money, BossRelic, Finish, SendCard, SendCardGhost, TransferCard, TransferRelic, TransferPotion, UsePotion, SendPotion, EmptyRoom, BossChosen, Splits, SetDisplayRelics, ClearRoom, LockRoom, ChooseNeow, ChooseTeamRelic, LoseLife, Kick, GetRedKey, GetBlueKey, GetGreenKey, Character, GetPotion, AddPotionSlot, SendRelic, ModifyBrainFreeze, DrawMap, ClearMap, DeckInfo, RelicInfo, RequestVersion, SendCardMessageBottle, AtDoor, Victory, TransferBooster, Bingo, BingoRules, TeamChange, BingoCard, TeamName, CustomMark, LastBoss, SendMessage, BluntScissorCard, MergeUncommon, Infusion, HeartChoice;
+      	Rules, Start, Ready, Version, Floor, Act, Hp, Money, BossRelic, Finish, SendCard, SendCardGhost, TransferCard, TransferRelic, TransferPotion, UsePotion, SendPotion, EmptyRoom, BossChosen, Splits,
+		SetDisplayRelics, ClearRoom, LockRoom, ChooseNeow, ChooseTeamRelic, LoseLife, Kick, GetRedKey, GetBlueKey, GetGreenKey, Character, GetPotion, AddPotionSlot, SendRelic, ModifyBrainFreeze, DrawMap,
+		ClearMap, DeckInfo, RelicInfo, RequestVersion, SendCardMessageBottle, AtDoor, Victory, TransferBooster, Bingo, BingoRules, TeamChange, BingoCard, TeamName, CustomMark, LastBoss, SendMessage,
+		BluntScissorCard, MergeUncommon, Infusion, HeartChoice, Stuck, Revive;
       
     	private dataType() {}
     }
@@ -1617,6 +1642,22 @@ public class NetworkHelper {
 				data = ByteBuffer.allocateDirect(8);
 				data.putInt(4, HardModeHeart.HeartChoice);
 				break;
+			case Stuck :
+				data = ByteBuffer.allocateDirect(8);
+				HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
+				boolean stuck = false;
+				if(hand != null){
+					stuck = hand.stuck;
+				}
+
+				data.putInt(4, stuck ? 1 : 0);
+				break;
+			case Revive:
+				data = ByteBuffer.allocateDirect(12);
+				data.putInt(4, AbstractDungeon.getCurrMapNode().x);
+				data.putInt(8, AbstractDungeon.getCurrMapNode().y);
+				break;
+
 			default:
 				data = ByteBuffer.allocateDirect(4);
 				break;

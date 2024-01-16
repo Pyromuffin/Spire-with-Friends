@@ -43,6 +43,8 @@ public class RemotePlayer
 	public int cards = 0;
 	public int upgrades = 0;
 
+	public boolean stuck = false;
+
 	public float finalTime = 0F;
 	public AbstractPlayer character = CardCrawlGame.characterManager.getCharacter(AbstractPlayer.PlayerClass.IRONCLAD);
 	public String characterCutscene = "";
