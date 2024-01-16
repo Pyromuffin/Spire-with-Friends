@@ -355,7 +355,7 @@ public class RemotePlayerWidget implements Comparable
 		sb.draw(TogetherManager.panelImg, xn, yn, TogetherManager.panelImg.getWidth() * Settings.scale, TogetherManager.panelImg.getHeight() * Settings.scale);
 
 		renderPlayerColour(sb, xn, yn);
-		renderPortrait(sb, xn, yn);
+		renderPortrait(sb, xn, yn, player.stuck);
 		renderUsername(sb, xn, yn);
 		renderIcons(sb, xn, yn);
 		renderBossRelics(sb, xn, yn);
@@ -370,9 +370,12 @@ public class RemotePlayerWidget implements Comparable
 		sb.setColor(displayColour);
 	}
 
-	public void renderPortrait(SpriteBatch sb, float xn, float yn) {
+	public void renderPortrait(SpriteBatch sb, float xn, float yn, boolean stuck) {
 		if (player.getPortrait() != null)
 			sb.draw(player.getPortrait(), xn + 26.0F * Settings.scale, yn+12.0F * Settings.scale, 56f * Settings.scale, 56f * Settings.scale);
+
+		if(stuck)
+			sb.draw(ImageMaster.INTENT_ATK_7, xn + 26.0F * Settings.scale, yn+12.0F * Settings.scale, 56f * Settings.scale, 56f * Settings.scale);
 
 		// Render Portrait frame
 		sb.draw(TogetherManager.portraitFrames.get(0), xn - 160.0F * Settings.scale, yn - 96.0F * Settings.scale, 0.0F, 0.0F, 432.0F, 243.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 1920, 1080, false, false);

@@ -4,6 +4,7 @@ package chronoMods.coop.relics;
 import basemod.BaseMod;
 import chronoMods.TogetherManager;
 import chronoMods.network.NetworkHelper;
+import chronoMods.network.RemotePlayer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
@@ -32,7 +33,6 @@ public class HandOfFate extends AbstractBlight {
     private static final BlightStrings blightStrings = CardCrawlGame.languagePack.getBlightString(ID);
     public static final String NAME = blightStrings.NAME;
     public static final String[] DESCRIPTIONS = blightStrings.DESCRIPTION;
-    public boolean stuck = false;
 
     public HandOfFate() {
         super(ID, NAME, "", "spear.png", true);
@@ -87,16 +87,14 @@ public class HandOfFate extends AbstractBlight {
         AbstractDungeon.player.isDead = false;
         AbstractDungeon.player.heal(AbstractDungeon.player.maxHealth, true);
         NetworkHelper.sendData(NetworkHelper.dataType.Hp);
-        stuck = true;
+
 
         // use a smoke bomb
         AbstractPotion p = PotionHelper.getPotion("SmokeBomb");
         p.use(AbstractDungeon.player);
 
+        TogetherManager.currentUser.stuck = true;
         NetworkHelper.sendData(NetworkHelper.dataType.Stuck);
-
-        //AbstractDungeon.player.obtainPotion(p);
-        //p.use(AbstractDungeon.player);
     }
 
     @Override
@@ -145,22 +143,24 @@ public class HandOfFate extends AbstractBlight {
         }
     }
 
-    @SpirePatch(clz = MapRoomNode.class, method="isConnectedTo")
-    public static class Stuck {
-        public static boolean Postfix(boolean __result, MapRoomNode __instance, MapRoomNode node) {
-            HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
-            if(hand != null && hand.stuck){
-                return false;
-            }
-
-            return __result;
-        }
-    }
-
-
     @SpirePatch(clz = RestOption.class, method="useOption")
     public static class ReviveRest {
         public static void Postfix(RestOption __instance) {
+            boolean reviving = false;
+
+            for(RemotePlayer p : TogetherManager.players){
+                if(p.stuck){
+                    reviving = true;
+                    break;
+                }
+            }
+
+            if(reviving){
+                int damageAmount = AbstractDungeon.player.currentHealth / 2;
+                DamageInfo info = new DamageInfo(AbstractDungeon.player, damageAmount, DamageInfo.DamageType.HP_LOSS);
+                AbstractDungeon.player.damage(info);
+            }
+
             if(AbstractDungeon.player.hasBlight("HandOfFate")){
                 NetworkHelper.sendData(NetworkHelper.dataType.Revive);
             }

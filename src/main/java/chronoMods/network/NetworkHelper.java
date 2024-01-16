@@ -1113,18 +1113,19 @@ public class NetworkHelper {
 				break;
 
 			case Revive:
-
-				HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
-				if(hand != null && hand.stuck){
-					hand.stuck = false;
-					// take us to the floor they got revived on.
+				if(TogetherManager.currentUser.stuck){
+					TogetherManager.currentUser.stuck = false;
+					// take us to the floor they revived us on.
 					int x = data.getInt(4);
 					int y = data.getInt(8);
-					MapRoomNode node = AbstractDungeon.map.get(y).get(x);
-					AbstractDungeon.setCurrMapNode(node);
+					AbstractDungeon.nextRoom.y = y;
+					AbstractDungeon.nextRoom.x = x;
 
 					TogetherManager.log(playerInfo.userName + " is reviving at " + x + " " + y);
-					sendData(dataType.Floor);
+				}
+
+				for(RemotePlayer p : TogetherManager.players){
+					p.stuck = false;
 				}
 
 				break;
@@ -1644,13 +1645,7 @@ public class NetworkHelper {
 				break;
 			case Stuck :
 				data = ByteBuffer.allocateDirect(8);
-				HandOfFate hand = (HandOfFate)AbstractDungeon.player.getBlight("HandOfFate");
-				boolean stuck = false;
-				if(hand != null){
-					stuck = hand.stuck;
-				}
-
-				data.putInt(4, stuck ? 1 : 0);
+				data.putInt(4, TogetherManager.currentUser.stuck ? 1 : 0);
 				break;
 			case Revive:
 				data = ByteBuffer.allocateDirect(12);
