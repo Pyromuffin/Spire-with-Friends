@@ -212,6 +212,10 @@ public class CustomModePopOver implements ScrollBarListener {
   }
   
   public void updateValues() {
+
+    MergeCustom.isActive = false;
+    TeamworkCustom.isActive = false;
+
       for (CustomMod cm : NewMenuButtons.customScreen.modList) {
           if (cm.selected) { 
               Settings.isTrial = true;
@@ -265,8 +269,7 @@ public class CustomModePopOver implements ScrollBarListener {
   }
 
   private void addNonDailyMods(CustomTrial trial, ArrayList<String> modIds) {
-    MergeCustom.isActive = false;
-    TeamworkCustom.isActive = false;
+
 
 
     for (String modId : modIds) {
