@@ -2,5 +2,9 @@
   "MergeCards": {
     "NAME": "Merge Cards",
     "DESCRIPTION": "Merged cards will now appear in your draft rewards."
+  },
+  "Teamwork": {
+    "NAME": "Teamwork",
+    "DESCRIPTION": "Choose a team relic at the start of the run."
   }
 }

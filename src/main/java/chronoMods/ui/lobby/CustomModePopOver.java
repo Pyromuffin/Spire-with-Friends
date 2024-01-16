@@ -114,7 +114,7 @@ public class CustomModePopOver implements ScrollBarListener {
     this.modList = new ArrayList<>();
 
     // Spire w/ Friends mods
-    CustomMod teamworkMod = addMod("Teamwork", "b", false);
+    addMod("Teamwork", "b", false);
     CustomMod draftMod = addDailyMod("Draft", "b");
     CustomMod sealedMod = addDailyMod("SealedDeck", "b");
     addDailyMod("Hoarder", "b");
@@ -155,16 +155,8 @@ public class CustomModePopOver implements ScrollBarListener {
     diverseMod.setMutualExclusionPair(greenMod);
     diverseMod.setMutualExclusionPair(blueMod);
     diverseMod.setMutualExclusionPair(purpleMod);
-
-    if(teamworkMod != null){
-      // no idea where to add this.
-      teamworkMod.name = "Teamwork";
-      teamworkMod.description = "Choose a team relic at the start of the run.";
-      String coloredString = FontHelper.colorString("[" + teamworkMod.name + "]", teamworkMod.color) + " " + teamworkMod.description;
-      ReflectionHacks.setPrivate(teamworkMod, teamworkMod.getClass(), "label", coloredString) ;
-    }
   }
-  
+
   private CustomMod addMod(String id, String color, boolean isDailyMod) {
     RunModStrings modString = CardCrawlGame.languagePack.getRunModString(id);
     if (modString != null) {
@@ -274,6 +266,8 @@ public class CustomModePopOver implements ScrollBarListener {
 
   private void addNonDailyMods(CustomTrial trial, ArrayList<String> modIds) {
     MergeCustom.isActive = false;
+    TeamworkCustom.isActive = false;
+
 
     for (String modId : modIds) {
       switch (modId) {
